@@ -176,7 +176,7 @@ const checkVisible = function checkVisible(component) {
       component.visible = true;
       component.forceUpdate();
     }
-  } else if (!(component.props.once && component.visible)) {
+  } else if (component.visible && !component.props.once) {
     component.visible = false;
     if (component.props.unmountIfInvisible) {
       component.forceUpdate();
