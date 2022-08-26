@@ -344,6 +344,11 @@ class LazyLoad extends Component {
       style
     } = this.props;
 
+    // In SSR
+    if(typeof window === 'undefined') {
+      this.visible = true; 
+    }
+
     return (
       <div className={`${classNamePrefix}-wrapper ${className}`} ref={this.setRef} style={style}>
         {this.visible ? (
