@@ -236,11 +236,14 @@ class LazyLoad extends Component {
     // It's unlikely to change delay type on the fly, this is mainly
     // designed for tests
     let scrollport = window;
-    const { scrollContainer } = this.props;
+    const { scrollContainer, scrollContainerRef } = this.props;
     if (scrollContainer) {
       if (isString(scrollContainer)) {
         scrollport = scrollport.document.querySelector(scrollContainer);
       }
+    }
+    if (scrollContainerRef) {
+      scrollport = scrollContainerRef.current;
     }
     const needResetFinalLazyLoadHandler =
       (this.props.debounce !== undefined && delayType === 'throttle') ||
@@ -341,11 +344,11 @@ class LazyLoad extends Component {
       placeholder,
       className,
       classNamePrefix,
-      style
+      style,
+      forceVisible,
     } = this.props;
 
-    // In SSR
-    if(typeof window === 'undefined') {
+    if(forceVisible) {
       this.visible = true; 
     }
 
@@ -383,8 +386,10 @@ LazyLoad.propTypes = {
   debounce: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   placeholder: PropTypes.node,
   scrollContainer: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  scrollContainerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.instanceOf(Element) }) ]),
   unmountIfInvisible: PropTypes.bool,
-  style: PropTypes.object
+  style: PropTypes.object,
+  forceVisible: PropTypes.bool,
 };
 
 LazyLoad.defaultProps = {
@@ -395,7 +400,8 @@ LazyLoad.defaultProps = {
   overflow: false,
   resize: false,
   scroll: true,
-  unmountIfInvisible: false
+  unmountIfInvisible: false,
+  forceVisible: false,
 };
 
 const getDisplayName = WrappedComponent =>
